@@ -6,3 +6,14 @@ public class Person
 		System.out.println("HelloWorld,amao");
 	}
 }
+
+
+
+
+
+
+
+
+class Test
+{
+}
