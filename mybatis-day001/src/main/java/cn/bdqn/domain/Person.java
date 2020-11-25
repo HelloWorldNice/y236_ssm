@@ -9,3 +9,9 @@ public class Person
 class Test
 {
 }
+
+
+
+class B
+{
+}
