@@ -15,3 +15,7 @@ class Test
 class B
 {
 }
+
+class A
+{
+}
