@@ -1,0 +1,421 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="cn.bdqn.mapper.EmployeeMapper">
+
+    <cache/>
+
+    <!-- 实现自定义映射(表字段和实体属性自己去映射)    -->
+    <resultMap id="EmployeeResultMap" type="ABC">
+        <id column="id" property="id"></id>
+        <result column="emp_name" property="empName"></result>
+    </resultMap>
+
+    <!-- 查询全部员工 List<Employee>
+        resultType: 实体、简单类型（int,double,string,map）
+        resultMap: 自定义映射
+    -->
+    <select id="selectAll" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+    </select>
+
+    <!-- 2、保存一个员工 -->
+    <insert id="insert" parameterType="cn.bdqn.domain.Employee">
+        insert into
+            t_employee(id,emp_name,sex,email,birthday,address)
+        values
+            (default,#{empName},#{sex},#{email},#{birthday},#{address} )
+    </insert>
+
+    <!-- 3、根据id查询员工 -->
+    <select id="selectById"  resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id = #{id}
+    </select>
+
+    <!-- 3、根据姓名模糊查询员工，返回list -->
+    <select id="selectByName_1"  resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name like #{empName}
+    </select>
+
+    <!-- 3、根据姓名模糊查询员工，返回list -->
+    <select id="selectByName_2"  resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name like %#{empName}%
+    </select>
+
+    <!-- 3、根据姓名模糊查询员工，返回list -->
+    <select id="selectByName_3"  resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name like '%#{empName}%'
+    </select>
+
+    <select id="selectByName_4"  resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name like '%${empName}%'
+    </select>
+
+    <select id="selectByName_5"  resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name like concat('%' , #{empName} , '%')
+    </select>
+
+    <!-- 添加记录返回自动增长的主键方式1 -->
+    <insert id="insertReturnPrimaryKey_1" parameterType="cn.bdqn.domain.Employee">
+        <selectKey keyColumn="id" keyProperty="id" resultType="int" order="AFTER">
+            select last_insert_id()
+        </selectKey>
+
+        insert into
+            t_employee(id,emp_name,sex,email,birthday,address)
+        values
+            (default,#{empName},#{sex},#{email},#{birthday},#{address} )
+    </insert>
+
+    <insert id="insertReturnPrimaryKey_2" parameterType="cn.bdqn.domain.Employee"
+            useGeneratedKeys="true"
+            keyColumn="id"
+            keyProperty="id"
+    >
+        insert into
+            t_employee(id,emp_name,sex,email,birthday,address)
+        values
+            (default,#{empName},#{sex},#{email},#{birthday},#{address} )
+    </insert>
+
+    <!-- 4、根据id删除员工·-->
+    <delete id="deleteById" parameterType="int" >
+        delete from
+            t_employee
+        where
+            id = #{id}
+    </delete>
+
+    <!-- 3、根据id查询员工【接口代理的方式来实现】 -->
+    <select id="queryById" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id = #{id}
+    </select>
+
+    <!-- 3、根据员工姓名和性别查询员工 -->
+    <select id="queryByNameAndSex" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name = #{empName} and
+            sex = #{sex}
+    </select>
+
+    <!-- 3、根据员工姓名和性别查询员工 -->
+    <select id="queryByEmp" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name = #{empName} and
+            sex = #{sex}
+    </select>
+
+
+    <!-- 3、根据员工姓名和性别查询员工 -->
+    <select id="queryByMap" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            emp_name = #{xxx} and
+            sex = #{yyy}
+    </select>
+
+    <!-- 3、根据id实现批量查询 -->
+    <select id="queryByList" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id in (#{list[0]} , #{list[1]} , #{list[2]})
+    </select>
+
+    <!-- 3、根据id实现批量查询 -->
+    <select id="queryByArray" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id in (#{ids[0]} , #{ids[1]} , #{ids[2]})
+    </select>
+
+    <!-- 3、根据id实现查询 -->
+    <select id="queryByIdReturnMap" resultType="map">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id = #{id}
+    </select>
+
+    <!-- 3、根据性别实现查询 -->
+    <select id="queryBySexReturnMaps" resultType="map">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            sex = #{sex}
+    </select>
+
+    <!-- 3、根据性别实现查询 -->
+    <resultMap id="EmployeeResultMap2" type="cn.bdqn.domain.Employee">
+        <id column="empId" property="id"></id>
+        <result column="emp_name" property="empName"></result>
+        <result column="deptId" property="dept.id"></result>
+        <result column="dept_name" property="dept.deptName"></result>
+    </resultMap>
+
+    <select id="queryByIdReturnEmpAndDept" resultMap="EmployeeResultMap2">
+        select
+            emp.id empId,emp.emp_name ,emp.sex,emp.email,emp.birthday,emp.address,
+            dept.id deptId, dept.dept_name
+        from
+            t_employee emp , t_dept dept
+        where
+            emp.id = #{id} and
+            emp.dept_id = dept.id
+    </select>
+
+    <resultMap id="EmployeeResultMap3" type="cn.bdqn.domain.Employee">
+        <id column="empId" property="id"></id>
+        <result column="emp_name" property="empName"></result>
+        <result column="sex" property="sex"></result>
+
+        <!--  一对一方式关联查询 -->
+        <association property="dept" javaType="cn.bdqn.domain.Dept">
+            <id column="deptId" property="id"></id>
+            <result column="dept_name" property="deptName"></result>
+        </association>
+
+    </resultMap>
+
+    <select id="queryByIdReturnEmpAndDept2" resultMap="EmployeeResultMap3">
+        select
+            emp.id empId,emp.emp_name ,emp.sex,emp.email,emp.birthday,emp.address,
+            dept.id deptId, dept.dept_name
+        from
+            t_employee emp , t_dept dept
+        where
+            emp.id = #{id} and
+            emp.dept_id = dept.id
+    </select>
+
+    <!-- 根据员工编号查询员工信息(分步查询)-->
+    <resultMap id="EmployeeResultMap4" type="cn.bdqn.domain.Employee">
+        <id column="id" property="id"></id>
+        <result column="emp_name" property="empName"></result>
+
+        <association property="dept"
+                     select="cn.bdqn.mapper.DeptMapper.queryById"
+                     column="dept_id">
+        </association>
+    </resultMap>
+
+
+    <select id="queryById2" resultMap="EmployeeResultMap4">
+        select
+            id,emp_name ,sex,email,birthday,address,dept_id
+        from
+            t_employee
+        where
+            id = #{id}
+    </select>
+
+    <!-- 根据部门编号查询该部门下所有的员工信息    -->
+    <select id="queryByDeptId" resultType="cn.bdqn.domain.Employee">
+        select
+            id,emp_name empName ,sex,email,birthday,address,dept_id
+        from
+            t_employee
+        where
+            dept_id = #{deptId}
+    </select>
+
+
+    <!-- 根据员工姓名、邮箱、家庭住址、性别模糊查询员工信息   -->
+    <select id="queryByCondition" resultType="cn.bdqn.domain.Employee">
+        select
+            id,emp_name empName ,sex,email,birthday,address,dept_id
+        from
+            t_employee
+        <trim prefix="where" suffixOverrides="and">
+            <if test="empName != null and empName != ''">
+                 emp_name = #{empName} and
+            </if>
+            <if test="sex != null and sex != ''">
+                 sex = #{sex} and
+            </if>
+            <if test="email != null and email != ''">
+                 email = #{email} and
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address} and
+            </if>
+        </trim>
+    </select>
+
+
+    <select id="queryByConditionForChoose" resultType="cn.bdqn.domain.Employee">
+        select
+            id,emp_name empName ,sex,email,birthday,address,dept_id
+        from
+            t_employee
+        <where>
+            <choose>
+                <when test="empName != null and empName != ''">
+                    emp_name = #{empName}
+                </when>
+                <when test="email != null and email != ''">
+                    email = #{email}
+                </when>
+                <otherwise>
+                    sex = '女'
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <update id="updateById" parameterType="cn.bdqn.domain.Employee">
+        update
+            t_employee
+        <set>
+            <if test="empName != null and empName != ''">
+                emp_name = #{empName} ,
+            </if>
+            <if test="sex != null and sex != ''">
+                sex = #{sex},
+            </if>
+            <if test="email != null and email != ''">
+                email = #{email}
+            </if>
+        </set>
+        where
+            id = #{id}
+    </update>
+
+    <select id="queryByIdsForArray" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id in
+                <foreach open="(" collection="ids" item="id" separator="," close=")">
+                    #{id}
+                </foreach>
+
+    </select>
+
+    <select id="queryByIdsForList" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            id,emp_name ,sex,email,birthday,address
+        from
+            t_employee
+        where
+            id in (
+        <foreach collection="ids" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="queryByIdsAndSexForMap" parameterType="cn.bdqn.domain.Employee" resultMap="EmployeeResultMap">
+        select
+            <include refid="CommonColumn"></include>
+        from
+            t_employee
+        where
+            sex = #{paramSex} and
+            id in (
+        <foreach collection="paramIds" item="id" separator=",">
+            #{id}
+        </foreach>
+        )
+    </select>
+
+    <select id="queryByEmpName" resultType="cn.bdqn.domain.Employee">
+        select
+            <include refid="CommonColumn"></include>
+        from
+            t_employee
+       <where>
+            <if test="_parameter != null">
+                emp_name = #{xxx}
+            </if>
+       </where>
+
+    </select>
+
+
+    <insert id="insertBatch" keyColumn="id" keyProperty="id" useGeneratedKeys="true">
+        insert into
+            t_employee(id,emp_name,sex,email,birthday,address)
+        values
+            <foreach collection="list" item="emp" separator=",">
+                (default,#{emp.empName},#{emp.sex},#{emp.email},#{emp.birthday},#{emp.address} )
+            </foreach>
+    </insert>
+
+    <insert id="insertBatch2">
+        <foreach collection="list" item="emp" separator=";">
+            insert into
+                t_employee(id,emp_name,sex,email,birthday,address)
+            values
+                (default,#{emp.empName},#{emp.sex},#{emp.email},#{emp.birthday},#{emp.address} )
+        </foreach>
+    </insert>
+
+    <sql id="CommonColumn">
+        id,emp_name empName,sex,email,birthday,address
+    </sql>
+
+</mapper>
